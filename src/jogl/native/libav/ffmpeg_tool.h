@@ -159,7 +159,7 @@ typedef struct {
     uint32_t         vBufferPlanes; // 1 for RGB*, 3 for YUV, ..
     uint32_t         vBitsPerPixel;
     uint32_t         vBytesPerPixelPerPlane;
-    enum PixelFormat vPixFmt;    // native decoder fmt
+    enum AVPixelFormat vPixFmt;    // native decoder fmt
     int32_t          vPTS;       // msec - overall last video PTS
     PTSStats         vPTSStats;
     int32_t          vTexWidth[4];  // decoded video tex width in bytes for each plane (max 4)
