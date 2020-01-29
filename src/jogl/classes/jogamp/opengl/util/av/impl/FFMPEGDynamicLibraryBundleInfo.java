@@ -51,7 +51,7 @@ class FFMPEGDynamicLibraryBundleInfo implements DynamicLibraryBundleInfo  {
 
     private static final List<String> glueLibNames = new ArrayList<String>(); // none
 
-    private static final int symbolCount = 66;
+    private static final int symbolCount = 67;
     private static final String[] symbolNames = {
          "avutil_version",
          "avformat_version",
@@ -86,6 +86,7 @@ class FFMPEGDynamicLibraryBundleInfo implements DynamicLibraryBundleInfo  {
 
          // libavutil
          "av_pix_fmt_descriptors",
+         "av_pix_fmt_desc_get",
          "av_frame_unref",            // 55.0.0 (opt)
          "av_realloc",
          "av_free",
@@ -145,6 +146,13 @@ class FFMPEGDynamicLibraryBundleInfo implements DynamicLibraryBundleInfo  {
          "avcodec_default_get_buffer2",    // 55 (opt)
          "avcodec_alloc_frame",
          "av_frame_alloc",
+
+         "avcodec_get_edge_width", //is no longer needed
+         "av_destruct_packet",
+         "av_free_packet",
+
+         "av_pix_fmt_descriptors",
+         "av_pix_fmt_desc_get",
 
          // libavdevice
          "avdevice_register_all",     // 53.0.0 (opt)
