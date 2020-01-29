@@ -39,6 +39,16 @@
     #include "libavutil/audioconvert.h"
     // 52: #include "libavutil/channel_layout.h"
 #endif
+#if LIBAVCODEC_VERSION_MAJOR < 58
+    #define AV_PIX_FMT_YUYV422 PIX_FMT_YUYV422
+    #define AV_PIX_FMT_UYVY422 PIX_FMT_UYVY422
+    #define AV_CODEC_CAP_DELAY CODEC_CAP_DELAY
+    #define AV_PIX_FMT_YUV420P AV_PIX_FMT_YUV420P
+    #define AV_PIX_FMT_YUVJ420P AV_PIX_FMT_YUVJ420P
+    #define AV_PIX_FMT_YUV422P AV_PIX_FMT_YUV422P
+    #define AV_PIX_FMT_YUVJ422P AV_PIX_FMT_YUVJ422P
+#endif
+
 
 #include <GL/gl.h>
 
@@ -1178,8 +1188,8 @@ JNIEXPORT void JNICALL FF_FUNC(setStream0)
                 #endif
             } else {
                 vLinesize[0] = pAV->pVFrame->linesize[0];
-                if( pAV->vPixFmt == PIX_FMT_YUYV422 || 
-                    pAV->vPixFmt == PIX_FMT_UYVY422 ) 
+                if( pAV->vPixFmt == AV_PIX_FMT_YUYV422 || 
+                    pAV->vPixFmt == AV_PIX_FMT_UYVY422 ) 
                 {
                     // Stuff 2x 16bpp (YUYV, UYVY) into one RGBA pixel!
                     pAV->vTexWidth[0] = pAV->pVCodecCtx->width / 2;
@@ -1284,7 +1294,7 @@ JNIEXPORT jint JNICALL FF_FUNC(readNextPacket0)
 
                 if (!frameDecoded) {
                     // stop sending empty packets if the decoder is finished 
-                    if (!packet.data && pAV->pACodecCtx->codec->capabilities & CODEC_CAP_DELAY) {
+                    if (!packet.data && pAV->pACodecCtx->codec->capabilities & AV_CODEC_CAP_DELAY) {
                         flush_complete = 1;
                     }
                     continue;
@@ -1408,7 +1418,7 @@ JNIEXPORT jint JNICALL FF_FUNC(readNextPacket0)
 
                 if (!frameDecoded) {
                     // stop sending empty packets if the decoder is finished
-                    if (!packet.data && pAV->pVCodecCtx->codec->capabilities & CODEC_CAP_DELAY) {
+                    if (!packet.data && pAV->pVCodecCtx->codec->capabilities & AV_CODEC_CAP_DELAY) {
                         flush_complete = 1;
                     }
                     continue;
@@ -1483,7 +1493,7 @@ JNIEXPORT jint JNICALL FF_FUNC(readNextPacket0)
                                         texFmt, texType, pAV->pVFrame->data[0] + p_offset[0]);
                 DBG_TEXSUBIMG2D_b(pAV);
 
-                if( pAV->vPixFmt == PIX_FMT_YUV420P || pAV->vPixFmt == PIX_FMT_YUVJ420P ) {
+                if( pAV->vPixFmt == AV_PIX_FMT_YUV420P || pAV->vPixFmt == AV_PIX_FMT_YUVJ420P ) {
                     // U plane
                     // FIXME: Libav Binary compatibility! JAU01
                     DBG_TEXSUBIMG2D_a('U',pAV,1,1,2,1);
@@ -1500,7 +1510,7 @@ JNIEXPORT jint JNICALL FF_FUNC(readNextPacket0)
                                             pAV->vTexWidth[2],      pAV->pVCodecCtx->height/2, 
                                             texFmt, texType, pAV->pVFrame->data[2] + p_offset[2]);
                     DBG_TEXSUBIMG2D_b(pAV);
-                } else if( pAV->vPixFmt == PIX_FMT_YUV422P || pAV->vPixFmt == PIX_FMT_YUVJ422P ) {
+                } else if( pAV->vPixFmt == AV_PIX_FMT_YUV422P || pAV->vPixFmt == AV_PIX_FMT_YUVJ422P ) {
                     // U plane
                     // FIXME: Libav Binary compatibility! JAU01
                     DBG_TEXSUBIMG2D_a('U',pAV,1,1,1,1);
