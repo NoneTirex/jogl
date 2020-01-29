@@ -39,15 +39,36 @@
     #include "libavutil/audioconvert.h"
     // 52: #include "libavutil/channel_layout.h"
 #endif
-#if LIBAVCODEC_VERSION_MAJOR < 58
+#ifndef AV_PIX_FMT_YUYV422
     #define AV_PIX_FMT_YUYV422 PIX_FMT_YUYV422
+#endif
+#ifndef AV_PIX_FMT_UYVY422
     #define AV_PIX_FMT_UYVY422 PIX_FMT_UYVY422
+#endif
+#ifndef AV_CODEC_CAP_DELAY
     #define AV_CODEC_CAP_DELAY CODEC_CAP_DELAY
+#endif
+#ifndef AV_PIX_FMT_YUV420P
     #define AV_PIX_FMT_YUV420P AV_PIX_FMT_YUV420P
+#endif
+#ifndef AV_PIX_FMT_YUVJ420P
     #define AV_PIX_FMT_YUVJ420P AV_PIX_FMT_YUVJ420P
+#endif
+#ifndef AV_PIX_FMT_YUV422P
     #define AV_PIX_FMT_YUV422P AV_PIX_FMT_YUV422P
+#endif
+#ifndef AV_PIX_FMT_YUVJ422P
     #define AV_PIX_FMT_YUVJ422P AV_PIX_FMT_YUVJ422P
 #endif
+//#if LIBAVCODEC_VERSION_MAJOR < 58
+//    #define AV_PIX_FMT_YUYV422 PIX_FMT_YUYV422
+//    #define AV_PIX_FMT_UYVY422 PIX_FMT_UYVY422
+//    #define AV_CODEC_CAP_DELAY CODEC_CAP_DELAY
+//    #define AV_PIX_FMT_YUV420P AV_PIX_FMT_YUV420P
+//    #define AV_PIX_FMT_YUVJ420P AV_PIX_FMT_YUVJ420P
+//    #define AV_PIX_FMT_YUV422P AV_PIX_FMT_YUV422P
+//    #define AV_PIX_FMT_YUVJ422P AV_PIX_FMT_YUVJ422P
+//#endif
 
 
 #include <GL/gl.h>
