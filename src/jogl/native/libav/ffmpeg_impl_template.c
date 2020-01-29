@@ -152,7 +152,7 @@ typedef int (APIENTRYP AV_DICT_SET)(AVDictionary **pm, const char *key, const ch
 typedef void (APIENTRYP AV_DICT_FREE)(AVDictionary **m);
 
 static const AVPixFmtDescriptor* sp_av_pix_fmt_descriptors;
-typedef const int (APIENTRYP AV_PIX_FMT_DESC_GET)(int pix_fmt);
+typedef AVPixFmtDescriptor (APIENTRYP AV_PIX_FMT_DESC_GET)(int pix_fmt);
 static AV_FRAME_UNREF sp_av_frame_unref;
 static AV_REALLOC sp_av_realloc;
 static AV_FREE sp_av_free;
@@ -1149,7 +1149,7 @@ JNIEXPORT void JNICALL FF_FUNC(setStream0)
         pAV->vPixFmt = pAV->pVCodecCtx->pix_fmt;
         pAV->vFlipped = JNI_FALSE;
         {   
-            AVPixFmtDescriptor pixDesc = NULL;
+            AVPixFmtDescriptor pixDesc;
             if (HAS_FUNC(sp_av_pix_fmt_desc_get))
             {
                 pixDesc = sp_av_pix_fmt_desc_get(pAV->vPixFmt);
