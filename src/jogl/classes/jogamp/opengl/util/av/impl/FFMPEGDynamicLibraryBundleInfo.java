@@ -51,7 +51,7 @@ class FFMPEGDynamicLibraryBundleInfo implements DynamicLibraryBundleInfo  {
 
     private static final List<String> glueLibNames = new ArrayList<String>(); // none
 
-    private static final int symbolCount = 65;
+    private static final int symbolCount = 66;
     private static final String[] symbolNames = {
          "avutil_version",
          "avformat_version",
@@ -66,6 +66,7 @@ class FFMPEGDynamicLibraryBundleInfo implements DynamicLibraryBundleInfo  {
          "avcodec_find_decoder",
          "avcodec_open2",             // 53.6.0    (opt)
          "avcodec_alloc_frame",
+         "av_frame_alloc",
          "avcodec_get_frame_defaults",
          "avcodec_free_frame",        // 54.28.0   (opt)
          "avcodec_default_get_buffer",     // <= 54 (opt), else sp_avcodec_default_get_buffer2
@@ -142,6 +143,8 @@ class FFMPEGDynamicLibraryBundleInfo implements DynamicLibraryBundleInfo  {
          "avcodec_default_get_buffer",     // <= 54 (opt), else sp_avcodec_default_get_buffer2
          "avcodec_default_release_buffer", // <= 54 (opt), else sp_av_frame_unref
          "avcodec_default_get_buffer2",    // 55 (opt)
+         "avcodec_alloc_frame",
+         "av_frame_alloc",
 
          // libavdevice
          "avdevice_register_all",     // 53.0.0 (opt)
@@ -291,6 +294,9 @@ class FFMPEGDynamicLibraryBundleInfo implements DynamicLibraryBundleInfo  {
             } else if( avCodecMajor == 56 && avFormatMajor == 56 && avUtilMajor == 54 ) {
                 // lavc56.lavf56.lavu54.lavr02
                 natives = new FFMPEGv11Natives();
+            } else if( avCodecMajor == 58 && avFormatMajor == 58 && avUtilMajor == 56 ) {
+                // lavc58.lavf58.lavu56.lavr04
+                natives = new FFMPEGv12Natives();
             } else {
                 System.err.println("LIB_AV No Version/Native-Impl Match");
                 natives = null;

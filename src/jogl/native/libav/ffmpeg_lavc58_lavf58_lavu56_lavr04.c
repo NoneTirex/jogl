@@ -26,8 +26,8 @@
  * or implied, of JogAmp Community.
  */
  
-#include "jogamp_opengl_util_av_impl_FFMPEGv11Natives.h"
+#include "jogamp_opengl_util_av_impl_FFMPEGv12Natives.h"
 
-#define FF_FUNC(METHOD) Java_jogamp_opengl_util_av_impl_FFMPEGv11Natives_ ## METHOD
+#define FF_FUNC(METHOD) Java_jogamp_opengl_util_av_impl_FFMPEGv12Natives_ ## METHOD
 
 #include "ffmpeg_impl_template.c"

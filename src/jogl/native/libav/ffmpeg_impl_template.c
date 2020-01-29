@@ -64,6 +64,7 @@ typedef void (APIENTRYP AVCODEC_STRING)(char *buf, int buf_size, AVCodecContext 
 typedef AVCodec *(APIENTRYP AVCODEC_FIND_DECODER)(int avCodecID); // lavc 53: 'enum CodecID id', lavc 54: 'enum AVCodecID id'
 typedef int (APIENTRYP AVCODEC_OPEN2)(AVCodecContext *avctx, AVCodec *codec, AVDictionary **options);                          // 53.6.0
 typedef AVFrame *(APIENTRYP AVCODEC_ALLOC_FRAME)(void);
+typedef AVFrame *(APIENTRYP AV_FRAME_ALLOC)(void);
 typedef void (APIENTRYP AVCODEC_GET_FRAME_DEFAULTS)(AVFrame *frame);
 typedef void (APIENTRYP AVCODEC_FREE_FRAME)(AVFrame **frame);
 typedef int (APIENTRYP AVCODEC_DEFAULT_GET_BUFFER)(AVCodecContext *s, AVFrame *pic); // <= 54 (opt), else AVCODEC_DEFAULT_GET_BUFFER2
@@ -87,6 +88,7 @@ static AVCODEC_STRING sp_avcodec_string;
 static AVCODEC_FIND_DECODER sp_avcodec_find_decoder;
 static AVCODEC_OPEN2 sp_avcodec_open2;                    // 53.6.0
 static AVCODEC_ALLOC_FRAME sp_avcodec_alloc_frame;
+static AV_FRAME_ALLOC sp_av_frame_alloc;
 static AVCODEC_GET_FRAME_DEFAULTS sp_avcodec_get_frame_defaults;
 static AVCODEC_FREE_FRAME sp_avcodec_free_frame;
 static AVCODEC_DEFAULT_GET_BUFFER sp_avcodec_default_get_buffer; // <= 54 (opt), else sp_avcodec_default_get_buffer2
@@ -222,7 +224,7 @@ static SWR_CONVERT sp_swr_convert;
     #define MY_MUTEX_UNLOCK(e,s)
 #endif
 
-#define SYMBOL_COUNT 65
+#define SYMBOL_COUNT 66
 
 JNIEXPORT jboolean JNICALL FF_FUNC(initSymbols0)
   (JNIEnv *env, jobject instance, jobject jmutex_avcodec_openclose, jobject jSymbols, jint count)
@@ -255,6 +257,7 @@ JNIEXPORT jboolean JNICALL FF_FUNC(initSymbols0)
     sp_avcodec_find_decoder = (AVCODEC_FIND_DECODER) (intptr_t) symbols[i++];
     sp_avcodec_open2 = (AVCODEC_OPEN2) (intptr_t) symbols[i++];
     sp_avcodec_alloc_frame = (AVCODEC_ALLOC_FRAME) (intptr_t) symbols[i++];
+    sp_av_frame_alloc = (AV_FRAME_ALLOC) (intptr_t) symbols[i++];
     sp_avcodec_get_frame_defaults = (AVCODEC_GET_FRAME_DEFAULTS) (intptr_t) symbols[i++];
     sp_avcodec_free_frame = (AVCODEC_FREE_FRAME) (intptr_t) symbols[i++];
     sp_avcodec_default_get_buffer = (AVCODEC_DEFAULT_GET_BUFFER) (intptr_t) symbols[i++];
@@ -838,7 +841,15 @@ JNIEXPORT void JNICALL FF_FUNC(setStream0)
     }
 
     if(0<=pAV->aid) {
-        AVFrame * pAFrame0 = sp_avcodec_alloc_frame();
+        AVFrame * pAFrame0 = NULL;
+        if (HAS_FUNC(sp_av_frame_alloc))
+        {
+            pAFrame0 = sp_av_frame_alloc();
+        }
+        else
+        {
+            pAFrame0 = sp_avcodec_alloc_frame();
+        }
         if( NULL == pAFrame0 ) {
             JoglCommon_throwNewRuntimeException(env, "Couldn't alloc 1st audio frame\n");
             return;
@@ -1009,7 +1020,14 @@ JNIEXPORT void JNICALL FF_FUNC(setStream0)
         pAV->pAFrames = calloc(pAV->aFrameCount, sizeof(AVFrame*));
         pAV->pAFrames[0] = pAFrame0;
         for(i=1; i<pAV->aFrameCount; i++) {
-            pAV->pAFrames[i] = sp_avcodec_alloc_frame();
+            if (HAS_FUNC(sp_av_frame_alloc))
+            {
+                pAV->pAFrames[i] = sp_av_frame_alloc();
+            }
+            else
+            {
+                pAV->pAFrames[i] = sp_avcodec_alloc_frame();
+            }
             if( NULL == pAV->pAFrames[i] ) {
                 JoglCommon_throwNewRuntimeException(env, "Couldn't alloc audio frame %d / %d", i, pAV->aFrameCount);
                 return;
@@ -1111,7 +1129,14 @@ JNIEXPORT void JNICALL FF_FUNC(setStream0)
                 pAV->vWidth, pAV->vHeight, pAV->vPixFmt, pAV->vBitsPerPixel, pAV->vBufferPlanes, pAV->pVCodecCtx->codec->capabilities);
         }
 
-        pAV->pVFrame=sp_avcodec_alloc_frame();
+        if (HAS_FUNC(sp_av_frame_alloc))
+        {
+            pAV->pVFrame = sp_av_frame_alloc();
+        }
+        else
+        {
+            pAV->pVFrame = sp_avcodec_alloc_frame();
+        }
         if( pAV->pVFrame == NULL ) {
             JoglCommon_throwNewRuntimeException(env, "Couldn't alloc video frame");
             return;

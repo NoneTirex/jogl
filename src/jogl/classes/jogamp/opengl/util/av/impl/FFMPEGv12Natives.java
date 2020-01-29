@@ -27,7 +27,8 @@
  */
 package jogamp.opengl.util.av.impl;
 
-class FFMPEGv11Natives extends FFMPEGNatives {
+class FFMPEGv12Natives
+        extends FFMPEGNatives {
     @Override
     native boolean initSymbols0(Object mutex_avcodec_openclose, long[] symbols, int count);
 
