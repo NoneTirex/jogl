@@ -156,6 +156,7 @@ typedef const int (APIENTRYP AV_PIX_FMT_DESC_GET)(int pix_fmt);
 static AV_FRAME_UNREF sp_av_frame_unref;
 static AV_REALLOC sp_av_realloc;
 static AV_FREE sp_av_free;
+static AV_PIX_FMT_DESC_GET sp_av_pix_fmt_desc_get;
 static AV_GET_BITS_PER_PIXEL sp_av_get_bits_per_pixel;
 static AV_SAMPLES_GET_BUFFER_SIZE sp_av_samples_get_buffer_size;
 static AV_GET_BYTES_PER_SAMPLE sp_av_get_bytes_per_sample;
@@ -308,7 +309,7 @@ JNIEXPORT jboolean JNICALL FF_FUNC(initSymbols0)
     sp_avcodec_decode_video2 = (AVCODEC_DECODE_VIDEO2) (intptr_t) symbols[i++];
 
     sp_av_pix_fmt_descriptors = (const AVPixFmtDescriptor*) (intptr_t) symbols[i++];
-    av_av_pix_fmt_desc_get = (AV_PIX_FMT_DESC_GET) (intptr_t) symbols[i++];
+    sp_av_pix_fmt_desc_get = (AV_PIX_FMT_DESC_GET) (intptr_t) symbols[i++];
     sp_av_frame_unref = (AV_FRAME_UNREF) (intptr_t) symbols[i++];
     sp_av_realloc = (AV_REALLOC) (intptr_t) symbols[i++];
     sp_av_free = (AV_FREE) (intptr_t) symbols[i++];
@@ -521,9 +522,9 @@ static int my_getPlaneCount(AVPixFmtDescriptor *pDesc) {
 
 #if 0
 static int my_is_hwaccel_pix_fmt(enum AVPixelFormat pix_fmt) {
-    if (HAS_FUNC(av_av_pix_fmt_desc_get))
+    if (HAS_FUNC(sp_av_pix_fmt_desc_get))
     {
-        return av_av_pix_fmt_desc_get(pix_fmt).flags & PIX_FMT_HWACCEL;
+        return sp_av_pix_fmt_desc_get(pix_fmt).flags & PIX_FMT_HWACCEL;
     }
     return sp_av_pix_fmt_descriptors[pix_fmt].flags & PIX_FMT_HWACCEL;
 }
@@ -1149,9 +1150,9 @@ JNIEXPORT void JNICALL FF_FUNC(setStream0)
         pAV->vFlipped = JNI_FALSE;
         {   
             AVPixFmtDescriptor pixDesc = NULL;
-            if (HAS_FUNC(av_av_pix_fmt_desc_get))
+            if (HAS_FUNC(sp_av_pix_fmt_desc_get))
             {
-                pixDesc = av_av_pix_fmt_desc_get(pAV->vPixFmt);
+                pixDesc = sp_av_pix_fmt_desc_get(pAV->vPixFmt);
             }
             else
             {
