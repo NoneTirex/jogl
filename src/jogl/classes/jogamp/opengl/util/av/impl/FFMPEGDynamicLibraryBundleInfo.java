@@ -139,6 +139,7 @@ class FFMPEGDynamicLibraryBundleInfo implements DynamicLibraryBundleInfo  {
     private static final String[] optionalSymbolNames = {
          "avformat_seek_file",        // ???       (opt)
          "avcodec_free_frame",        // 54.28.0   (opt)
+         "avcodec_get_frame_defaults",
          "av_frame_unref",            // 55.0.0 (opt)
          "av_dict_count",             // 54.*   (opt)
          "avcodec_default_get_buffer",     // <= 54 (opt), else sp_avcodec_default_get_buffer2
