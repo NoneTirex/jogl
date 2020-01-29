@@ -257,7 +257,7 @@ static SWR_CONVERT sp_swr_convert;
     #define MY_MUTEX_UNLOCK(e,s)
 #endif
 
-#define SYMBOL_COUNT 66
+#define SYMBOL_COUNT 67
 
 JNIEXPORT jboolean JNICALL FF_FUNC(initSymbols0)
   (JNIEnv *env, jobject instance, jobject jmutex_avcodec_openclose, jobject jSymbols, jint count)
