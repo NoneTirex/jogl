@@ -152,6 +152,7 @@ typedef int (APIENTRYP AV_DICT_SET)(AVDictionary **pm, const char *key, const ch
 typedef void (APIENTRYP AV_DICT_FREE)(AVDictionary **m);
 
 static const AVPixFmtDescriptor* sp_av_pix_fmt_descriptors;
+typedef const int (APIENTRYP AV_PIX_FMT_DESC_GET)(int pix_fmt);
 static AV_FRAME_UNREF sp_av_frame_unref;
 static AV_REALLOC sp_av_realloc;
 static AV_FREE sp_av_free;
@@ -306,7 +307,8 @@ JNIEXPORT jboolean JNICALL FF_FUNC(initSymbols0)
     sp_avcodec_decode_audio4 = (AVCODEC_DECODE_AUDIO4) (intptr_t) symbols[i++];
     sp_avcodec_decode_video2 = (AVCODEC_DECODE_VIDEO2) (intptr_t) symbols[i++];
 
-    sp_av_pix_fmt_descriptors = (const AVPixFmtDescriptor*)  (intptr_t) symbols[i++];
+    sp_av_pix_fmt_descriptors = (const AVPixFmtDescriptor*) (intptr_t) symbols[i++];
+    av_av_pix_fmt_desc_get = (AV_PIX_FMT_DESC_GET) (intptr_t) symbols[i++];
     sp_av_frame_unref = (AV_FRAME_UNREF) (intptr_t) symbols[i++];
     sp_av_realloc = (AV_REALLOC) (intptr_t) symbols[i++];
     sp_av_free = (AV_FREE) (intptr_t) symbols[i++];
@@ -519,6 +521,10 @@ static int my_getPlaneCount(AVPixFmtDescriptor *pDesc) {
 
 #if 0
 static int my_is_hwaccel_pix_fmt(enum AVPixelFormat pix_fmt) {
+    if (HAS_FUNC(av_av_pix_fmt_desc_get))
+    {
+        return av_av_pix_fmt_desc_get(pix_fmt).flags & PIX_FMT_HWACCEL;
+    }
     return sp_av_pix_fmt_descriptors[pix_fmt].flags & PIX_FMT_HWACCEL;
 }
 
@@ -690,10 +696,13 @@ static void getAlignedLinesizes(AVCodecContext *avctx, int linesize[/*4*/]) {
 
     sp_avcodec_align_dimensions2(avctx, &w, &h, stride_align);
 
-    if (!(avctx->flags & CODEC_FLAG_EMU_EDGE)) {
-        int edge_width = sp_avcodec_get_edge_width();
-        w += edge_width * 2;
-        h += edge_width * 2;
+    if (HAS_FUNC(sp_avcodec_get_edge_width))
+    {
+        if (!(avctx->flags & CODEC_FLAG_EMU_EDGE)) {
+            int edge_width = sp_avcodec_get_edge_width();
+            w += edge_width * 2;
+            h += edge_width * 2;
+        }
     }
 
     do {
@@ -1139,7 +1148,15 @@ JNIEXPORT void JNICALL FF_FUNC(setStream0)
         pAV->vPixFmt = pAV->pVCodecCtx->pix_fmt;
         pAV->vFlipped = JNI_FALSE;
         {   
-            AVPixFmtDescriptor pixDesc = sp_av_pix_fmt_descriptors[pAV->vPixFmt];
+            AVPixFmtDescriptor pixDesc = NULL;
+            if (HAS_FUNC(av_av_pix_fmt_desc_get))
+            {
+                pixDesc = av_av_pix_fmt_desc_get(pAV->vPixFmt);
+            }
+            else
+            {
+                pixDesc = sp_av_pix_fmt_descriptors[pAV->vPixFmt];
+            }
             pAV->vBitsPerPixel = sp_av_get_bits_per_pixel(&pixDesc);
             pAV->vBufferPlanes = my_getPlaneCount(&pixDesc);
         }
@@ -1299,7 +1316,14 @@ JNIEXPORT jint JNICALL FF_FUNC(readNextPacket0)
                     sp_av_frame_unref(pAFrameCurrent);
                     pAV->aFrameCurrent = ( pAV->aFrameCurrent + 1 ) % pAV->aFrameCount ;
                 }
-                sp_avcodec_get_frame_defaults(pAFrameCurrent);
+                if (HAS_FUNC(sp_av_frame_unref))
+                {
+                    sp_av_frame_unref(pAFrameCurrent);
+                }
+                else
+                {
+                    sp_avcodec_get_frame_defaults(pAFrameCurrent);
+                }
 
                 if (flush_complete) {
                     break;
@@ -1424,7 +1448,14 @@ JNIEXPORT jint JNICALL FF_FUNC(readNextPacket0)
             for ( frameCount=0; 0 < packet.size || 0 == frameCount; frameCount++ ) {
                 int frameDecoded;
                 int len1;
-                sp_avcodec_get_frame_defaults(pAV->pVFrame);
+                if (HAS_FUNC(sp_av_frame_unref))
+                {
+                    sp_av_frame_unref(pAV->pVFrame);
+                }
+                else
+                {
+                    sp_avcodec_get_frame_defaults(pAV->pVFrame);
+                }
                 if (flush_complete) {
                     break;
                 }
