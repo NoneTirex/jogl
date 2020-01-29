@@ -48,6 +48,9 @@
     #include "libavresample/avresample.h"
     #include "libswresample/swresample.h"
 #endif
+#if LIBAVUTIL_VERSION_MAJOR < 56
+    #define AVPixelFormat PixelFormat
+#endif
 
 #ifndef LIBAVRESAMPLE_VERSION_MAJOR
 #define LIBAVRESAMPLE_VERSION_MAJOR -1

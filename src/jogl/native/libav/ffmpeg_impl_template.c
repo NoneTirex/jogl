@@ -60,7 +60,7 @@
 //#ifndef AV_PIX_FMT_YUVJ422P
 //    #define AV_PIX_FMT_YUVJ422P PIX_FMT_YUVJ422P
 //#endif
-#if LIBAVCODEC_VERSION_MAJOR < 58
+#if LIBAVUTIL_VERSION_MAJOR < 56
     #define AV_PIX_FMT_YUYV422 PIX_FMT_YUYV422
     #define AV_PIX_FMT_UYVY422 PIX_FMT_UYVY422
     #define AV_CODEC_CAP_DELAY CODEC_CAP_DELAY
@@ -518,13 +518,13 @@ static int my_getPlaneCount(AVPixFmtDescriptor *pDesc) {
 }
 
 #if 0
-static int my_is_hwaccel_pix_fmt(enum PixelFormat pix_fmt) {
+static int my_is_hwaccel_pix_fmt(enum AVPixelFormat pix_fmt) {
     return sp_av_pix_fmt_descriptors[pix_fmt].flags & PIX_FMT_HWACCEL;
 }
 
-static enum PixelFormat my_get_format(struct AVCodecContext *s, const enum PixelFormat * fmt) {
+static enum AVPixelFormat my_get_format(struct AVCodecContext *s, const enum AVPixelFormat * fmt) {
     int i=0;
-    enum PixelFormat f0, fR = PIX_FMT_NONE;
+    enum AVPixelFormat f0, fR = PIX_FMT_NONE;
     char buf[256];
 
     fprintf(stderr, "get_format ****\n");
