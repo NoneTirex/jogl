@@ -1114,6 +1114,7 @@
             <include name="jogamp/opengl/util/av/impl/FFMPEGv09Natives.java" />
             <include name="jogamp/opengl/util/av/impl/FFMPEGv10Natives.java" />
             <include name="jogamp/opengl/util/av/impl/FFMPEGv11Natives.java" />
+            <include name="jogamp/opengl/util/av/impl/FFMPEGv12Natives.java" />
         </javac>
 
         <!-- generate openmax native headers -->
@@ -1780,6 +1781,11 @@
 
       <c.build.ffmpeg version.lav="lavc56_lavf56_lavu54_lavr02"
                output.lib.name="jogl_ffmpegv11"
+               compiler.cfg.id="${compiler.cfg.id}"
+               linker.cfg.id="${linker.cfg.id.os}"/>
+
+      <c.build.ffmpeg version.lav="lavc58_lavf58_lavu56_lavr04"
+               output.lib.name="jogl_ffmpegv12"
                compiler.cfg.id="${compiler.cfg.id}"
                linker.cfg.id="${linker.cfg.id.os}"/>
     </target>
