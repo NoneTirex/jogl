@@ -1621,7 +1621,7 @@
           <include name="${rootrel.obj.joglsub}/ffmpeg_lavc54_lavf54_lavu52_lavr01.*"/>
           <include name="${rootrel.obj.joglsub}/ffmpeg_lavc55_lavf55_lavu53_lavr01.*"/>
           <include name="${rootrel.obj.joglsub}/ffmpeg_lavc56_lavf56_lavu54_lavr02.*"/>
-          <include name="${rootrel.obj.joglsub}/ffmpeg_lavc58_lavf58_lavu58_lavr04.*"/>
+          <include name="${rootrel.obj.joglsub}/ffmpeg_lavc58_lavf58_lavu56_lavr04.*"/>
         </patternset>
 
         <patternset id="c.src.files.jogl.desktop">
